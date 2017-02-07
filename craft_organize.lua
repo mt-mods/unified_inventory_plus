@@ -19,12 +19,12 @@ local function onload()
 		local formspecy = perplayer_formspec.formspec_y
 		local formspec = unified_inventory_plus.craft_organize(player, perplayer_formspec).formspec
 		--formspec = formspec.."label[3.0,"..(formspecy - 2.0)..";Organize:]"
-		formspec = formspec.."image_button[2.0,"..(formspecy - 1.0)..";1.0,1.0;1.png;craft_organize_1;]"
-		formspec = formspec.."image_button[3.0,"..(formspecy - 1.0)..";1.0,1.0;3.png;craft_organize_3;]"
-		formspec = formspec.."image_button[4.0,"..(formspecy - 1.0)..";1.0,1.0;4.png;craft_organize_4;]"
-		formspec = formspec.."image_button[5.0,"..(formspecy - 1.0)..";1.0,1.0;6.png;craft_organize_6;]"
-		formspec = formspec.."image_button[6.0,"..(formspecy - 1.0)..";1.0,1.0;8.png;craft_organize_8;]"
-		formspec = formspec.."image_button[7.0,"..(formspecy - 1.0)..";1.0,1.0;9.png;craft_organize_9;]"
+		formspec = formspec.."image_button[2.0,"..(formspecy - 0.5)..";0.5,0.5;1.png;craft_organize_1;]"
+		formspec = formspec.."image_button[2.5,"..(formspecy - 0.5)..";0.5,0.5;3.png;craft_organize_3;]"
+		formspec = formspec.."image_button[3.0,"..(formspecy - 0.5)..";0.5,0.5;4.png;craft_organize_4;]"
+		formspec = formspec.."image_button[3.5,"..(formspecy - 0.5)..";0.5,0.5;6.png;craft_organize_6;]"
+		formspec = formspec.."image_button[4.0,"..(formspecy - 0.5)..";0.5,0.5;8.png;craft_organize_8;]"
+		formspec = formspec.."image_button[4.5,"..(formspecy - 0.5)..";0.5,0.5;9.png;craft_organize_9;]"
 		return {formspec=formspec}
 	end,
 }
