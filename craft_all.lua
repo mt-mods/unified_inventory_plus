@@ -48,19 +48,6 @@ local function infer_width(list, expected)
 end
 
 
--- InvRef :room_for_item() does not check for multiple stacks need. That's the purpose of this function
-local function room_left_for_item(list, item)
-	local item_name = item:get_name()
-	local room_left = 0
-	for k,v in pairs(list) do
-		minetest.chat_send_all("")
-		if(v:get_name() == item_name) then room_left = room_left + v:get_free_space()
-		elseif v:is_empty() then room_left = room_left + item:get_stack_max() end
-	end
-	return room_left
-end
-
-
 -- Craft max possible items and put the result in the main inventory
 local function craft_craftall(player, formname, fields)	
 	local player_inv = player:get_inventory()
@@ -75,25 +62,17 @@ local function craft_craftall(player, formname, fields)
 	if room_left == 0 then return end
 		
 	-- While there are ingredients & room, craft !
+	local expected_type_name = tmp_result.item:get_name()
 	local no_stack_limit = minetest.get_player_privs(player:get_player_name()).creative and not tmp_result.item:get_stack_max() == 1
-	local nb_res, result, decremented_input = 0, tmp_result, craft_list
-	while not tmp_result.item:is_empty() and (no_stack_limit or nb_res + tmp_result.item:get_count() <= room_left) do
+	local nb_res, result, decremented_input = 0, tmp_result, tmp_inv
+	while not tmp_result.item:is_empty() and tmp_result.item:get_name() == expected_type_name and (no_stack_limit or nb_res + tmp_result.item:get_count() <= room_left) do
 		nb_res = nb_res + tmp_result.item:get_count()
 		decremented_input = tmp_inv
-		tmp_result, tmp_inv = minetest.get_craft_result({ method = "normal", width = craft_width, items = decremented_input.items})
+		tmp_result, tmp_inv = minetest.get_craft_result(decremented_input)
 	end
 
 	-- Put a single stack for creative players and split the result for non creatives
-	if no_stack_limit then
-		player_inv:add_item("main", result.item:get_name().." "..nb_res)
-	else
-		local nb_stacks = math.floor(nb_res / result.item:get_stack_max())
-		local remaining = nb_res % result.item:get_stack_max()
-		for i=1,nb_stacks do
-			player_inv:add_item("main", result.item:get_name().." "..result.item:get_stack_max())
-		end
-		if remaining ~= 0 then player_inv:add_item("main", result.item:get_name().." "..remaining) end
-	end
+	place_item_in_stacks(player, "main", result.item:get_name(), nb_res)
 	player_inv:set_list("craft", decremented_input.items)
 end
 
