@@ -47,24 +47,53 @@ local function infer_width(list, expected)
 	return width
 end
 
+
+-- InvRef :room_for_item() does not check for multiple stacks need. That's the purpose of this function
+local function room_left_for_item(list, item)
+	local item_name = item:get_name()
+	local room_left = 0
+	for k,v in pairs(list) do
+		minetest.chat_send_all("")
+		if(v:get_name() == item_name) then room_left = room_left + v:get_free_space()
+		elseif v:is_empty() then room_left = room_left + item:get_stack_max() end
+	end
+	return room_left
+end
+
+
 -- Craft max possible items and put the result in the main inventory
-local function craft_craftall(player, formname, fields)		
+local function craft_craftall(player, formname, fields)	
 	local player_inv = player:get_inventory()
 	assert(player_inv)
 	local craft_list = player_inv:get_list("craft")
 	local craft_width = infer_width(craft_list, player_inv:get_stack("craftpreview", 1))
 	if craft_width == nil then return end
 
-	-- While there are ingredients & room in the inventory, craft !
+	-- Check the inventory room
 	local tmp_result, tmp_inv = minetest.get_craft_result({ method = "normal", width = craft_width, items = craft_list})
+	local room_left = room_left_for_item(player_inv:get_list("main"), tmp_result.item)
+	if room_left == 0 then return end
+		
+	-- While there are ingredients & room, craft !
+	local no_stack_limit = minetest.get_player_privs(player:get_player_name()).creative and not tmp_result.item:get_stack_max() == 1
 	local nb_res, result, decremented_input = 0, tmp_result, craft_list
-	if not player_inv:room_for_item("main", tmp_result.item) then return end
-	while not tmp_result.item:is_empty() and player_inv:room_for_item("main", tmp_result.item:get_name().." "..nb_res + tmp_result.item:get_count()) and nb_res + tmp_result.item:get_count() <= tmp_result.item:get_stack_max() do
+	while not tmp_result.item:is_empty() and (no_stack_limit or nb_res + tmp_result.item:get_count() <= room_left) do
 		nb_res = nb_res + tmp_result.item:get_count()
 		decremented_input = tmp_inv
 		tmp_result, tmp_inv = minetest.get_craft_result({ method = "normal", width = craft_width, items = decremented_input.items})
 	end
-	player_inv:add_item("main", result.item:get_name().." "..nb_res)
+
+	-- Put a single stack for creative players and split the result for non creatives
+	if no_stack_limit then
+		player_inv:add_item("main", result.item:get_name().." "..nb_res)
+	else
+		local nb_stacks = math.floor(nb_res / result.item:get_stack_max())
+		local remaining = nb_res % result.item:get_stack_max()
+		for i=1,nb_stacks do
+			player_inv:add_item("main", result.item:get_name().." "..result.item:get_stack_max())
+		end
+		if remaining ~= 0 then player_inv:add_item("main", result.item:get_name().." "..remaining) end
+	end
 	player_inv:set_list("craft", decremented_input.items)
 end
 
