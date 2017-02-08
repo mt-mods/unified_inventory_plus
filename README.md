@@ -6,6 +6,8 @@ It adds 2 button types to the craft page:
 - Craft All: crafting a stack and putting the result in the inventory
 - Patterns buttons: reorganizing iteams in the craft inventory following usual patterns
 
+Functionalities can be independants and you can disable those you don't want in init.lua
+
 
 Mod Dependencies: unified_inventory
 
