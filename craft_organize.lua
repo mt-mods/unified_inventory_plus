@@ -1,23 +1,6 @@
 -- Organize items in the craft inventory following a pattern:
 
 
-
--- Pattern struct: (Comment unwanted ones & organize on your wish. Buttons placed left to right then up)
--- Inventory indexes to fill (then others for non creatives)
-local craft_patterns = {
-{ico="1.png" , pattern={1}},
-{ico="3.png" , pattern={1,2,3}},
-{ico="3b.png", pattern={1,4,7}},
-{ico="4.png" , pattern={1,2,4,5}},
-{ico="5.png" , pattern={1,3,5,7,9}},
-{ico="6.png" , pattern={1,4,5,7,8,9}},
-{ico="6b.png", pattern={1,2,3,4,5,6}},
-{ico="7.png" , pattern={1,2,3,4,5,6,8}},
-{ico="8.png" , pattern={1,2,3,4,6,7,8,9}},
-{ico="9.png" , pattern={1,2,3,4,5,6,7,8,9}}
-}
-
-
 local S = unified_inventory.gettext
 local F = unified_inventory.fgettext
 
@@ -29,7 +12,7 @@ local function onload()
 	get_formspec = function(player, perplayer_formspec)
 		local formspecy = perplayer_formspec.formspec_y
 		local formspec = unified_inventory_plus.craft_organize(player, perplayer_formspec).formspec
-		for i,v in ipairs(craft_patterns) do
+		for i,v in ipairs(unified_inventory_plus.craft_patterns) do
 			formspec = formspec.."image_button["..(2.0 + 0.5 * ((i-1)%6))..","..(formspecy - 0.5 * math.ceil(i/6))..";0.5,0.5;"..v.ico..";craft_organize_"..i..";]"
 		end
 		return {formspec=formspec}
@@ -95,7 +78,7 @@ local function craft_organize(player, formname, fields)
 	local res = {ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name)}
 	for i=1,9 do res[i]:set_count(0) end -- Doing this because using empty ItemStack in list constructor crashes the game :S
 	
-	local pattern = craft_patterns[tonumber(pattern_id)].pattern
+	local pattern = unified_inventory_plus.craft_patterns[tonumber(pattern_id)].pattern
 	local nb_stacks = 0
 	for i in pairs(pattern) do nb_stacks = nb_stacks + 1 end
 	local stack_size = math.floor(total_amount / nb_stacks)
