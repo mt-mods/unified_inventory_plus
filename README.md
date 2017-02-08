@@ -7,6 +7,8 @@ It adds 2 button types to the craft page:
 - Patterns buttons: reorganizing iteams in the craft inventory following usual patterns
 
 
+Mod Dependencies: unified_inventory
+
 License
 =======
 
