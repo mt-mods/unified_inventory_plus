@@ -2,13 +2,14 @@ Unified inventory Plus
 =================
 
 Unified Inventory Plus extends Unified Inventory.
-It adds 2 button types to the craft page:
+It adds 3 button types to the craft page:
 - Craft All: crafting a stack and putting the result in the inventory
 - Patterns buttons: reorganizing items in the craft inventory following usual patterns
+- Rotation button: rotating the craft inventory content
 
-In init.lua, you can:
+In init.lua, you can easily:
 Disable the functionalities you don't want
-Disable and reroder patterns
+Disable and reorder patterns
 
 Mod Dependencies: unified_inventory
 
