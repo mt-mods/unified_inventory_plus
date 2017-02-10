@@ -1,9 +1,6 @@
 -- Organize items in the craft inventory following a pattern:
 
 
-local S = unified_inventory.gettext
-local F = unified_inventory.fgettext
-
 -- Backup to inject code
 unified_inventory_plus.craft_organize = unified_inventory.pages["craft"].get_formspec
 
@@ -97,6 +94,7 @@ end
 
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
+	--if not formname:match("craft") then return end
 	for k, v in pairs(fields) do
 		if k:match("craft_organize_") then
 			craft_organize(player, formname, fields)

@@ -9,7 +9,7 @@ local function onload()
 	get_formspec = function(player, perplayer_formspec)
 		local formspecy = perplayer_formspec.formspec_y
 		local formspec = unified_inventory_plus.craft_all(player, perplayer_formspec).formspec
-		formspec = formspec.."button[5.15,  "..(formspecy + 1.18)..";0.8,0.6;craft_craftall;All]"
+		formspec = formspec.."button[5.15,  "..(formspecy + 1.18)..";0.8,0.6;craft_craftall;"..S("All").."]"
 		return {formspec=formspec}
 	end,
 }
@@ -18,23 +18,7 @@ end
 onload()
 
 
--- Determine the minimal size occupied by the ingredients in the craft inventory
---local function get_recipe_width(list)
---	local mini = 3
---	local maxi = 0
---	for j = 0, 2 do
---		for i = 1, 3 do
---			if not list[3*j+i]:is_empty() then
---				if mini > i then mini = i end
---				if maxi < i then maxi = i end
---			end
---		end
---	end
---	if mini > maxi then return 0 end
---	return maxi - mini + 1
---end
 
--- The previous function works as expected but that s not what expects get_craft_result.
 -- I don t get what is this width (for instance 3 to craft a sandstone and not 2), so I determine it by comparing the result
 local function infer_width(list, expected)
 	if not expected or expected:is_empty() then return nil end
@@ -80,6 +64,7 @@ end
 
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
+	--if not formname:match("craft") then return end
 	for k, v in pairs(fields) do
 		if k:match("craft_craftall") then
 			craft_craftall(player, formname, fields)
