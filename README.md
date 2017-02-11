@@ -19,4 +19,5 @@ License
 Refer to Unified Inventory for original medias copyright.
 
 Copyright (C) 2017 Bousket
-Unified Inventory Plus code is licensed under the GNU LGPLv3+.
+Unified Inventory Plus code is licensed under the CC0
+https://creativecommons.org/publicdomain/zero/1.0/
