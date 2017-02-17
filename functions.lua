@@ -1,4 +1,4 @@
-
+local mod_skyblock = minetest.get_modpath("skyblock")
 
 -- InvRef :room_for_item() does not check for multiple stacks need. That's the purpose of this function
 function room_left_for_item(list, item)
@@ -32,4 +32,15 @@ function place_item_in_stacks(player, inv_name, item_name, nb_items)
 		end
 		if remaining ~= 0 then player_inv:add_item(inv_name, item_name.." "..remaining) end
 	end
+	
+	-- support skyblock quests
+	if mod_skyblock then
+		-- track crafting, mimic minetest.register_on_craft as it's bypassed using this function ;)
+		for i=1,nb_items do
+			skyblock.feats.on_craft(ItemStack(item_name), player)
+		end
+	end
+	
+	-- log event!
+	minetest.log("action", player:get_player_name().." crafts "..item_name.." "..nb_items)
 end
