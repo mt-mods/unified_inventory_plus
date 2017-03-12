@@ -11,6 +11,8 @@ In init.lua, you can easily:
 Disable the functionalities you don't want
 Disable and reorder patterns
 
+Fully compatible with Skyblock
+
 Mod Dependencies: unified_inventory
 
 License
@@ -21,3 +23,8 @@ Refer to Unified Inventory for original medias copyright.
 Copyright (C) 2017 Bousket
 Unified Inventory Plus code is licensed under the CC0
 https://creativecommons.org/publicdomain/zero/1.0/
+
+Authors
+=======
+Bousket - Main mod
+shivajiva101 - Skyblock Integration
