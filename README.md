@@ -15,6 +15,15 @@ Fully compatible with Skyblock
 
 Mod Dependencies: unified_inventory
 
+
+Settings
+=======
+
+Features can be toggled with the following settings (true per default):
+* `unified_inventory_plus.enable_craft_all`
+* `unified_inventory_plus.enable_craft_organize`
+* `unified_inventory_plus.enable_craft_rotate`
+
 License
 =======
 

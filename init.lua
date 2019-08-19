@@ -37,7 +37,14 @@ unified_inventory_plus = {
 dofile(modpath.."/functions.lua")
 
 -- Functionalities are independants.
--- Comment the following lines to disable those you don't want
-dofile(modpath.."/craft_all.lua")
-dofile(modpath.."/craft_organize.lua")
-dofile(modpath.."/craft_rotate.lua")
+if minetest.settings:get_bool("unified_inventory_plus.enable_craft_all", true) then
+	dofile(modpath.."/craft_all.lua")
+end
+
+if minetest.settings:get_bool("unified_inventory_plus.enable_craft_organize", true) then
+	dofile(modpath.."/craft_organize.lua")
+end
+
+if minetest.settings:get_bool("unified_inventory_plus.enable_craft_rotate", true) then
+	dofile(modpath.."/craft_rotate.lua")
+end
