@@ -1,6 +1,8 @@
 local S = unified_inventory.gettext
 local F = unified_inventory.fgettext
 
+local has_stamina = minetest.global_exists("stamina")
+
 -- Backup to inject code
 unified_inventory_plus.craft_all = unified_inventory.pages["craft"].get_formspec
 
@@ -27,13 +29,13 @@ local function infer_width(list, expected)
 		local result, remaining_stack = minetest.get_craft_result({ method = "normal", width = i, items = list})
 		if result.item:to_string() == expected:to_string() then width = i break end
 	end
-	if width == nil then print("Can't infer recipe width for "..expected:to_string()) end
+	if width == nil then minetest.log("warning", "[unified_inventory_plus] Can't infer recipe width for "..expected:to_string()) end
 	return width
 end
 
 
 -- Craft max possible items and put the result in the main inventory
-local function craft_craftall(player, formname, fields)	
+local function craft_craftall(player, formname, fields)
 	local player_inv = player:get_inventory()
 	assert(player_inv)
 	local craft_list = player_inv:get_list("craft")
@@ -44,7 +46,7 @@ local function craft_craftall(player, formname, fields)
 	local tmp_result, tmp_inv = minetest.get_craft_result({ method = "normal", width = craft_width, items = craft_list})
 	local room_left = room_left_for_item(player_inv:get_list("main"), tmp_result.item)
 	if room_left == 0 then return end
-		
+
 	-- While there are ingredients & room, craft !
 	local expected_type_name = tmp_result.item:get_name()
 	local no_stack_limit = minetest.get_player_privs(player:get_player_name()).creative and not tmp_result.item:get_stack_max() == 1
@@ -53,6 +55,9 @@ local function craft_craftall(player, formname, fields)
 		nb_res = nb_res + tmp_result.item:get_count()
 		decremented_input = tmp_inv
 		tmp_result, tmp_inv = minetest.get_craft_result(decremented_input)
+		if has_stamina and stamina.exhaust_player then
+			stamina.exhaust_player(player, stamina.settings.exhaust_craft, stamina.exhaustion_reasons.craft)
+		end
 	end
 
 	-- Put a single stack for creative players and split the result for non creatives
