@@ -33,3 +33,6 @@ https://creativecommons.org/publicdomain/zero/1.0/
 ## Authors
 Bousket - Main mod.  
 shivajiva101 - Skyblock Integration.
+fluxionary - Stamina mod integration.
+NatureFreshMilk.
+Panquesito7.
