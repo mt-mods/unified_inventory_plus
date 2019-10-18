@@ -1,5 +1,5 @@
-local S = unified_inventory.gettext
-local F = unified_inventory.fgettext
+local S = minetest.get_translator("unified_inventory")
+local F = minetest.formspec_escape
 
 local has_stamina = minetest.global_exists("stamina")
 
@@ -11,7 +11,7 @@ local function onload()
 	get_formspec = function(player, perplayer_formspec)
 		local formspecy = perplayer_formspec.formspec_y
 		local formspec = unified_inventory_plus.craft_all(player, perplayer_formspec).formspec
-		formspec = formspec.."button[5.15,  "..(formspecy + 1.18)..";0.8,0.6;craft_craftall;"..S("All").."]"
+		formspec = formspec.."button[5.15,  "..(formspecy + 1.18)..";0.8,0.6;craft_craftall;"..F(S("All")).."]"
 		return {formspec=formspec}
 	end,
 }
