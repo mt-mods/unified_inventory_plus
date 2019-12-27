@@ -5,7 +5,6 @@ function room_left_for_item(list, item)
 	local item_name = item:get_name()
 	local room_left = 0
 	for k,v in pairs(list) do
-		minetest.chat_send_all("")
 		if(v:get_name() == item_name) then room_left = room_left + v:get_free_space()
 		elseif v:is_empty() then room_left = room_left + item:get_stack_max() end
 	end
@@ -40,7 +39,4 @@ function place_item_in_stacks(player, inv_name, item_name, nb_items)
 			skyblock.feats.on_craft(ItemStack(item_name), player)
 		end
 	end
-	
-	-- log event!
-	minetest.log("action", player:get_player_name().." crafts "..item_name.." "..nb_items)
 end

@@ -4,6 +4,7 @@ It adds 3 button types to the craft page:
 - Craft All: crafting a stack and putting the result in the inventory
 - Patterns buttons: reorganizing items in the craft inventory following usual patterns
 - Rotation button: rotating the craft inventory content
+- Clear button: clear the craft inventory content
 
 In `init.lua`, you can easily:
 Disable the functionalities you don't want
@@ -16,6 +17,7 @@ Features can be toggled with the following settings (true per default):
 * `unified_inventory_plus.enable_craft_all`
 * `unified_inventory_plus.enable_craft_organize`
 * `unified_inventory_plus.enable_craft_rotate`
+* `unified_inventory_plus.enable_craft_clear`
 
 ## Dependencies
 - [unified_inventory](https://github.com/minetest-mods/unified_inventory)

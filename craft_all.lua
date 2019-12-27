@@ -63,6 +63,9 @@ local function craft_craftall(player, formname, fields)
 	-- Put a single stack for creative players and split the result for non creatives
 	place_item_in_stacks(player, "main", result.item:get_name(), nb_res)
 	player_inv:set_list("craft", decremented_input.items)
+	
+	-- log event!
+	minetest.log("action", player:get_player_name().." crafts "..result.item:get_name().." "..nb_res)
 end
 
 

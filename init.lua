@@ -48,3 +48,7 @@ end
 if minetest.settings:get_bool("unified_inventory_plus.enable_craft_rotate", true) then
 	dofile(modpath.."/craft_rotate.lua")
 end
+
+if minetest.settings:get_bool("unified_inventory_plus.enable_craft_clear", true) then
+	dofile(modpath.."/craft_clear.lua")
+end
