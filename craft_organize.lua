@@ -49,7 +49,7 @@ end
 
 
 -- Organize items in the craft inventory following a pattern
-local function craft_organize(player, formname, fields)	
+local function craft_organize(player, formname, fields)
 	local pattern_id
 	for k, v in pairs(fields) do
 		pattern_id = k:match("craft_organize_(.*)")
@@ -62,11 +62,20 @@ local function craft_organize(player, formname, fields)
 	local player_name = player:get_player_name()
 	local craft_list = player_inv:get_list("craft")
 	local is_creative = minetest.get_player_privs(player_name).creative
-	
+
 	-- Organize only on 1 type of item
 	local only_one_type, type_name = get_type_infos(craft_list)
 	if not type_name then return end -- craft is empty
 	if not only_one_type then minetest.chat_send_player(player_name, "You can only organize one type of item.") return end
+
+	local itemdef = minetest.registered_items[type_name]
+	if itemdef and itemdef.stack_max == 1 then
+		-- disallow non-stackable items
+		-- most of them have assiciated metadata which gets cleared in the reordering
+		minetest.chat_send_player(player_name, "You can only organize stackable items.")
+		return
+	end
+
 
 	-- Don't exceed 9*99 for non creative players. It shouldn't happen but avoids potential losses then
 	local total_amount = get_total_amount(craft_list)
@@ -74,18 +83,18 @@ local function craft_organize(player, formname, fields)
 
 	local res = {ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name)}
 	for i=1,9 do res[i]:set_count(0) end -- Doing this because using empty ItemStack in list constructor crashes the game :S
-	
+
 	local pattern = unified_inventory_plus.craft_patterns[tonumber(pattern_id)].pattern
 	local nb_stacks = 0
 	for i in pairs(pattern) do nb_stacks = nb_stacks + 1 end
 	local stack_size = math.floor(total_amount / nb_stacks)
 	if not is_creative then stack_size = math.min(stack_size, ItemStack(type_name):get_stack_max()) end -- limit stacks to get_stack_max() for non creatives
 	local remaining = total_amount - nb_stacks * stack_size -- no % nb_stacks if limit: remaining could be greater than a stack
-	
+
 	for i=1,nb_stacks do
 		res[pattern[i]]:add_item(type_name.." "..stack_size)
 	end
-	
+
 	player_inv:set_list("craft", res)
 	place_item_in_stacks(player, "craft", type_name, remaining)
 end

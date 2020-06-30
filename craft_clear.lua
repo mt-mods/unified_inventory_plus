@@ -18,15 +18,22 @@ end
 onload()
 
 
--- Rotate items in the craft inventory
+-- Return items from the craft inventory to the player's inventory
 local function craft_clear(player, formname, fields)	
 	local player_inv = player:get_inventory()
 	local craft_list = player_inv:get_list("craft")
 	local remaining_craft_list = craft_list
 
 	for k,v in pairs(craft_list) do
-		--minetest.chat_send_all(v:get_name().." "..v:get_count())
-		if(v:get_count() > 0) then
+		local type_name = v:get_name()
+		local itemdef = minetest.registered_items[type_name]
+		-- non-stackable items often have wear / metadata attached that gets lost in the code below
+		if itemdef and itemdef.stack_max == 1 then
+			if player_inv:room_for_item("main", v) then
+				player_inv:add_item("main", v)
+				remaining_craft_list[k]:clear()
+			end
+		elseif(v:get_count() > 0) then
 			local nb_left = room_left_for_item(player_inv:get_list("main"), v)
 			if(nb_left >= v:get_count()) then
 				place_item_in_stacks(player, "main", v:get_name(), v:get_count())
