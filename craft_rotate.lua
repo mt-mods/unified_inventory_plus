@@ -1,5 +1,5 @@
 -- Rotate items in the craft inventory
-
+local ui = unified_inventory
 
 -- Backup to inject code
 unified_inventory_plus.craft_rotate = unified_inventory.pages["craft"].get_formspec
@@ -9,7 +9,10 @@ local function onload()
 	get_formspec = function(player, perplayer_formspec)
 		local formspecy = perplayer_formspec.formspec_y
 		local formspec = unified_inventory_plus.craft_rotate(player, perplayer_formspec).formspec
-		formspec = formspec.."image_button[1.25,"..(formspecy)..";0.75,0.75;pattern_rotate.png;craft_rotate;]"
+		formspec = formspec..string.format("image_button[%f,%f;%f,%f;pattern_rotate.png;craft_rotate;]",
+			perplayer_formspec.craft_x - perplayer_formspec.btn_spc,
+			perplayer_formspec.craft_y,
+			perplayer_formspec.btn_size, perplayer_formspec.btn_size)
 		return {formspec=formspec}
 	end,
 }

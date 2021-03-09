@@ -1,5 +1,5 @@
 -- Organize items in the craft inventory following a pattern:
-
+local ui = unified_inventory
 
 -- Backup to inject code
 unified_inventory_plus.craft_organize = unified_inventory.pages["craft"].get_formspec
@@ -7,10 +7,24 @@ unified_inventory_plus.craft_organize = unified_inventory.pages["craft"].get_for
 local function onload()
 	unified_inventory.pages["craft"] = {
 	get_formspec = function(player, perplayer_formspec)
-		local formspecy = perplayer_formspec.formspec_y
 		local formspec = unified_inventory_plus.craft_organize(player, perplayer_formspec).formspec
-		for i,v in ipairs(unified_inventory_plus.craft_patterns) do
-			formspec = formspec.."image_button["..(2.0 + 0.5 * ((i-1)%6))..","..(formspecy - 0.5 * math.ceil(i/6))..";0.5,0.5;"..v.ico..";craft_organize_"..i..";]"
+		local btnsz = ui.imgscale/3
+		local btnspc = ui.imgscale/2
+
+		if perplayer_formspec.pagecols == 4 then -- UI is in lite mode.
+			for i,v in ipairs(unified_inventory_plus.craft_patterns) do
+				formspec = formspec..string.format("image_button[%f,%f;%f,%f;%s;craft_organize_%i;]",
+					perplayer_formspec.craft_x + btnspc * (i-1),
+					perplayer_formspec.craft_y + 0.1 - btnspc,
+					btnsz, btnsz, v.ico, i)
+			end
+		else
+			for i,v in ipairs(unified_inventory_plus.craft_patterns) do
+				formspec = formspec..string.format("image_button[%f,%f;%f,%f;%s;craft_organize_%i;]",
+					perplayer_formspec.craft_x + btnspc * ((i-1)%6) + 0.1,
+					perplayer_formspec.craft_y + 0.22 - (math.ceil(i/6)) * btnspc,
+					btnsz, btnsz, v.ico, i)
+			end
 		end
 		return {formspec=formspec}
 	end,
