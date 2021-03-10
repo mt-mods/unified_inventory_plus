@@ -1,5 +1,5 @@
 -- Clear items in the craft inventory
-
+local ui = unified_inventory
 
 -- Backup to inject code
 unified_inventory_plus.craft_clear = unified_inventory.pages["craft"].get_formspec
@@ -9,7 +9,10 @@ local function onload()
 	get_formspec = function(player, perplayer_formspec)
 		local formspecy = perplayer_formspec.formspec_y + 1
 		local formspec = unified_inventory_plus.craft_clear(player, perplayer_formspec).formspec
-		formspec = formspec.."image_button[1.25,"..(formspecy)..";0.75,0.75;pattern_clear.png;craft_clear;]"
+		formspec = formspec..string.format("image_button[%f,%f;%f,%f;pattern_clear.png;craft_clear;]",
+			perplayer_formspec.craft_x - perplayer_formspec.btn_spc,
+			perplayer_formspec.craft_y + ui.imgscale,
+			perplayer_formspec.btn_size, perplayer_formspec.btn_size)
 		return {formspec=formspec}
 	end,
 }

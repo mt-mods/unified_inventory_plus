@@ -1,7 +1,7 @@
 local S = minetest.get_translator("unified_inventory")
 local F = minetest.formspec_escape
-
 local has_stamina = minetest.global_exists("stamina")
+local ui = unified_inventory
 
 -- Backup to inject code
 unified_inventory_plus.craft_all = unified_inventory.pages["craft"].get_formspec
@@ -9,9 +9,14 @@ unified_inventory_plus.craft_all = unified_inventory.pages["craft"].get_formspec
 local function onload()
 	unified_inventory.pages["craft"] = {
 	get_formspec = function(player, perplayer_formspec)
-		local formspecy = perplayer_formspec.formspec_y
 		local formspec = unified_inventory_plus.craft_all(player, perplayer_formspec).formspec
-		formspec = formspec.."button[5.15,  "..(formspecy + 1.18)..";0.8,0.6;craft_craftall;"..F(S("All")).."]"
+		formspec = formspec..string.format("image[%f,%f;%f,%f;ui_crafting_long_arrow.png]",
+				perplayer_formspec.craft_arrow_x, perplayer_formspec.craft_y,
+				ui.imgscale, ui.imgscale * 3)..
+			string.format("button[%f,%f;%f,%f;craft_craftall;%s]",
+				perplayer_formspec.craft_arrow_x + 0.23, perplayer_formspec.craft_y + 1.50,
+				perplayer_formspec.btn_size, perplayer_formspec.btn_size,
+				F(S("All")))
 		return {formspec=formspec}
 	end,
 }
