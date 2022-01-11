@@ -1,25 +1,26 @@
 -- Organize items in the craft inventory following a pattern:
 local ui = unified_inventory
+local uip = unified_inventory_plus
 
 -- Backup to inject code
-unified_inventory_plus.craft_organize = unified_inventory.pages["craft"].get_formspec
+uip.craft_organize = ui.pages["craft"].get_formspec
 
 local function onload()
-	unified_inventory.pages["craft"] = {
+	ui.pages["craft"] = {
 	get_formspec = function(player, perplayer_formspec)
-		local formspec = unified_inventory_plus.craft_organize(player, perplayer_formspec).formspec
+		local formspec = uip.craft_organize(player, perplayer_formspec).formspec
 		local btnsz = ui.imgscale/3
 		local btnspc = ui.imgscale/2
 
 		if perplayer_formspec.pagecols == 4 then -- UI is in lite mode.
-			for i,v in ipairs(unified_inventory_plus.craft_patterns) do
+			for i,v in ipairs(uip.craft_patterns) do
 				formspec = formspec..string.format("image_button[%f,%f;%f,%f;%s;craft_organize_%i;]",
 					perplayer_formspec.craft_x + btnspc * (i-1),
 					perplayer_formspec.craft_y + 0.1 - btnspc,
 					btnsz, btnsz, v.ico, i)
 			end
 		else
-			for i,v in ipairs(unified_inventory_plus.craft_patterns) do
+			for i,v in ipairs(uip.craft_patterns) do
 				formspec = formspec..string.format("image_button[%f,%f;%f,%f;%s;craft_organize_%i;]",
 					perplayer_formspec.craft_x + btnspc * ((i-1)%6) + 0.1,
 					perplayer_formspec.craft_y + 0.22 - (math.ceil(i/6)) * btnspc,
@@ -98,7 +99,7 @@ local function craft_organize(player, formname, fields)
 	local res = {ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name),ItemStack(type_name)}
 	for i=1,9 do res[i]:set_count(0) end -- Doing this because using empty ItemStack in list constructor crashes the game :S
 
-	local pattern = unified_inventory_plus.craft_patterns[tonumber(pattern_id)].pattern
+	local pattern = uip.craft_patterns[tonumber(pattern_id)].pattern
 	local nb_stacks = 0
 	for i in pairs(pattern) do nb_stacks = nb_stacks + 1 end
 	local stack_size = math.floor(total_amount / nb_stacks)
@@ -110,7 +111,7 @@ local function craft_organize(player, formname, fields)
 	end
 
 	player_inv:set_list("craft", res)
-	place_item_in_stacks(player, "craft", type_name, remaining)
+	uip.place_item_in_stacks(player, "craft", type_name, remaining)
 end
 
 

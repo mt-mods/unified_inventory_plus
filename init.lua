@@ -1,7 +1,6 @@
 -- Unified Inventory Plus for Minetest 0.4.8+
 
 local modpath = minetest.get_modpath(minetest.get_current_modname())
-local worldpath = minetest.get_worldpath()
 
 unified_inventory_plus = {
 
@@ -25,8 +24,8 @@ unified_inventory_plus = {
 	{ico="pattern_7.png" , pattern={1,2,3,4,5,6,8}},
 	{ico="pattern_8.png" , pattern={1,2,3,4,6,7,8,9}},
 	},
-	
-	
+
+
 }
 
 

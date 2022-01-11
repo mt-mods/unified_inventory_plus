@@ -1,14 +1,15 @@
 -- Rotate items in the craft inventory
 local ui = unified_inventory
+local uip = unified_inventory_plus
 
 -- Backup to inject code
-unified_inventory_plus.craft_rotate = unified_inventory.pages["craft"].get_formspec
+uip.craft_rotate = ui.pages["craft"].get_formspec
 
 local function onload()
-	unified_inventory.pages["craft"] = {
+	ui.pages["craft"] = {
 	get_formspec = function(player, perplayer_formspec)
 		local formspecy = perplayer_formspec.formspec_y
-		local formspec = unified_inventory_plus.craft_rotate(player, perplayer_formspec).formspec
+		local formspec = uip.craft_rotate(player, perplayer_formspec).formspec
 		formspec = formspec..string.format("image_button[%f,%f;%f,%f;pattern_rotate.png;craft_rotate;]",
 			perplayer_formspec.craft_x - perplayer_formspec.btn_spc,
 			perplayer_formspec.craft_y,
@@ -22,7 +23,7 @@ onload()
 
 
 -- Rotate items in the craft inventory
-local function craft_rotate_cw(player, formname, fields)	
+local function craft_rotate_cw(player, formname, fields)
 	local player_inv = player:get_inventory()
 	local craft_list = player_inv:get_list("craft")
 
@@ -39,7 +40,7 @@ local function craft_rotate_cw(player, formname, fields)
 	craft_list[4] = craft_list[8]
 	craft_list[8] = craft_list[6]
 	craft_list[6] = stack
-	
+
 	player_inv:set_list("craft", craft_list)
 end
 
