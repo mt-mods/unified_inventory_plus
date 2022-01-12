@@ -1,9 +1,7 @@
-local S = minetest.get_translator("unified_inventory")
-local F = minetest.formspec_escape
-local has_stamina = minetest.global_exists("stamina")
-local has_skyblock = minetest.get_modpath("skyblock")
 local ui = unified_inventory
 local uip = unified_inventory_plus
+local S = uip.S
+local F = minetest.formspec_escape
 
 -- Backup to inject code
 uip.craft_all = ui.pages["craft"].get_formspec
@@ -12,43 +10,43 @@ ui.pages["craft"] = {
     get_formspec = function(player, perplayer_formspec)
         local formspec = uip.craft_all(player, perplayer_formspec).formspec
         formspec = formspec ..
-                string.format("image[%f,%f;%f,%f;ui_crafting_long_arrow.png]",
-                        perplayer_formspec.craft_arrow_x,
-                        perplayer_formspec.craft_y,
-                        ui.imgscale,
-                        ui.imgscale * 3) ..
-                string.format("button[%f,%f;%f,%f;craft_craftall;%s]",
-                        perplayer_formspec.craft_arrow_x + 0.23,
-                        perplayer_formspec.craft_y + 1.50,
-                        perplayer_formspec.btn_size,
-                        perplayer_formspec.btn_size,
-                        F(S("All")))
+            ("image[%f,%f;%f,%f;ui_crafting_long_arrow.png]"):format(
+                perplayer_formspec.craft_arrow_x,
+                perplayer_formspec.craft_y,
+                ui.imgscale,
+                ui.imgscale * 3) ..
+            ("button[%f,%f;%f,%f;craft_craftall;%s]"):format(
+                perplayer_formspec.craft_arrow_x + 0.23,
+                perplayer_formspec.craft_y + 1.50,
+                perplayer_formspec.btn_size,
+                perplayer_formspec.btn_size,
+                F(S("All"))
+            )
         return { formspec = formspec }
     end,
 }
 
--- I don't get what is this width (for instance 3 to craft a sandstone and not 2),
--- so I determine it by comparing the result
+-- make sure the width is right
 local function infer_width(list, expected)
     if not expected or expected:is_empty() then
-        return nil
+        return
     end
-    local width = nil
+    local width
     for i = 1, 3 do
-        local result, remaining_stack = minetest.get_craft_result({ method = "normal", width = i, items = list })
-        if result.item:to_string() == expected:to_string() then
+        local output, _ = minetest.get_craft_result({ method = "normal", width = i, items = list })
+        if output.item:to_string() == expected:to_string() then
             width = i
             break
         end
     end
-    if width == nil then
-        minetest.log("warning", "[unified_inventory_plus] Can't infer recipe width for " .. expected:to_string())
+    if not width then
+        uip.log("warning", S("Can't infer recipe width for %s"), expected:to_string())
     end
     return width
 end
 
 -- Craft max possible items and put the result in the main inventory
-local function craft_craftall(player, formname, fields)
+local function craft_craftall(player)
     local player_inv = player:get_inventory()
     local player_name = player:get_player_name()
     local craft_list = player_inv:get_list("craft")
@@ -120,14 +118,13 @@ local function craft_craftall(player, formname, fields)
 
     minetest.remove_detached_inventory(tmp_inv_name)
 
-    minetest.log("action", player:get_player_name() .. " crafts " .. expected_result:get_name() .. " " .. num_crafted)
+    uip.log("action", S("%s crafts %s %i"), player_name, expected_result:to_string(), num_crafted)
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-    --if not formname:match("craft") then return end
-    for k, v in pairs(fields) do
+    for k, _ in pairs(fields) do
         if k:match("craft_craftall") then
-            craft_craftall(player, formname, fields)
+            craft_craftall(player)
             return
         end
     end

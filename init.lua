@@ -1,16 +1,16 @@
 -- Unified Inventory Plus for Minetest 0.4.8+
 
-local modpath = minetest.get_modpath(minetest.get_current_modname())
+local modname = minetest.get_current_modname()
+local modpath = minetest.get_modpath(modname)
 
 unified_inventory_plus = {
-
-    -- Patterns: (Comment unwanted ones & reorder as you wish: buttons are then placed left to right, then up, 6 on a row)
-    -- pattern field contains indexes to fill in the craft inventory according to the scheme: (then others for non creatives)
+    -- Patterns: (Comment unwanted ones & reorder as you wish: buttons are then placed left to right,
+    -- then up, 6 on a row) pattern field contains indexes to fill in the craft inventory according
+    -- to the scheme: (then others for non creatives)
     --
     -- 1 2 3
     -- 4 5 6
     -- 7 8 9
-    --
     craft_patterns = {
         { ico = "pattern_1.png", pattern = { 1 } },
         { ico = "pattern_4.png", pattern = { 1, 2, 4, 5 } },
@@ -25,24 +25,35 @@ unified_inventory_plus = {
         { ico = "pattern_8.png", pattern = { 1, 2, 3, 4, 6, 7, 8, 9 } },
     },
 
+    has = {
+        stamina = minetest.global_exists("stamina"),
+        skyblock = minetest.get_modpath("skyblock"),
+    },
 
+    log = function(level, message_fmt, ...)
+        minetest.log(level, "[unified_inventory_plus]" .. message_fmt:format(...))
+    end,
+
+    S = minetest.get_translator("unified_inventory"),
 }
 
-dofile(modpath .. "/functions.lua")
+local uip = unified_inventory_plus
+
+dofile(modpath .. "/settings.lua")
 
 -- Functionalities are independants.
-if minetest.settings:get_bool("unified_inventory_plus.enable_craft_all", true) then
+if uip.settings.enable_craft_all then
     dofile(modpath .. "/craft_all.lua")
 end
 
-if minetest.settings:get_bool("unified_inventory_plus.enable_craft_organize", true) then
+if uip.settings.enable_craft_organize then
     dofile(modpath .. "/craft_organize.lua")
 end
 
-if minetest.settings:get_bool("unified_inventory_plus.enable_craft_rotate", true) then
+if uip.settings.enable_craft_rotate then
     dofile(modpath .. "/craft_rotate.lua")
 end
 
-if minetest.settings:get_bool("unified_inventory_plus.enable_craft_clear", true) then
+if uip.settings.enable_craft_clear then
     dofile(modpath .. "/craft_clear.lua")
 end
