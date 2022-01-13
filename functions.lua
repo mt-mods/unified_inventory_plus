@@ -1,7 +1,8 @@
 local mod_skyblock = minetest.get_modpath("skyblock")
+local uip = unified_inventory_plus
 
 -- InvRef :room_for_item() does not check for multiple stacks need. That's the purpose of this function
-function room_left_for_item(list, item)
+function uip.room_left_for_item(list, item)
 	local item_name = item:get_name()
 	local room_left = 0
 	for k,v in pairs(list) do
@@ -15,7 +16,7 @@ end
 
 -- Add items to the inventory, splitting in stacks if necessary
 -- Have to separate item_name & nb_items instead of using an Itemstack in the case you want to add many not stackable ItemStack (keys, filled buckets...)
-function place_item_in_stacks(player, inv_name, item_name, nb_items)
+function uip.place_item_in_stacks(player, inv_name, item_name, nb_items)
 	local player_inv = player:get_inventory()
 	assert(player_inv)
 	local stack_max = ItemStack(item_name):get_stack_max()
@@ -31,7 +32,7 @@ function place_item_in_stacks(player, inv_name, item_name, nb_items)
 		end
 		if remaining ~= 0 then player_inv:add_item(inv_name, item_name.." "..remaining) end
 	end
-	
+
 	-- support skyblock quests
 	if mod_skyblock then
 		-- track crafting, mimic minetest.register_on_craft as it's bypassed using this function ;)

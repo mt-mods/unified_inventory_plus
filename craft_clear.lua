@@ -1,14 +1,14 @@
 -- Clear items in the craft inventory
 local ui = unified_inventory
+local uip = unified_inventory_plus
 
 -- Backup to inject code
-unified_inventory_plus.craft_clear = unified_inventory.pages["craft"].get_formspec
+uip.craft_clear = ui.pages["craft"].get_formspec
 
 local function onload()
-	unified_inventory.pages["craft"] = {
+	ui.pages["craft"] = {
 	get_formspec = function(player, perplayer_formspec)
-		local formspecy = perplayer_formspec.formspec_y + 1
-		local formspec = unified_inventory_plus.craft_clear(player, perplayer_formspec).formspec
+		local formspec = uip.craft_clear(player, perplayer_formspec).formspec
 		formspec = formspec..string.format("image_button[%f,%f;%f,%f;pattern_clear.png;craft_clear;]",
 			perplayer_formspec.craft_x - perplayer_formspec.btn_spc,
 			perplayer_formspec.craft_y + ui.imgscale,
@@ -22,7 +22,7 @@ onload()
 
 
 -- Return items from the craft inventory to the player's inventory
-local function craft_clear(player, formname, fields)	
+local function craft_clear(player, formname, fields)
 	local player_inv = player:get_inventory()
 	local craft_list = player_inv:get_list("craft")
 	local remaining_craft_list = craft_list
@@ -37,17 +37,17 @@ local function craft_clear(player, formname, fields)
 				remaining_craft_list[k]:clear()
 			end
 		elseif(v:get_count() > 0) then
-			local nb_left = room_left_for_item(player_inv:get_list("main"), v)
+			local nb_left = uip.room_left_for_item(player_inv:get_list("main"), v)
 			if(nb_left >= v:get_count()) then
-				place_item_in_stacks(player, "main", v:get_name(), v:get_count())
+				uip.place_item_in_stacks(player, "main", v:get_name(), v:get_count())
 				remaining_craft_list[k]:clear()
 			else
-				place_item_in_stacks(player, "main", v:get_name(), nb_left)
+				uip.place_item_in_stacks(player, "main", v:get_name(), nb_left)
 				remaining_craft_list[k]:set_count(v:get_count() - nb_left)
 			end
 		end
 	end
-	
+
 	player_inv:set_list("craft", remaining_craft_list)
 end
 
