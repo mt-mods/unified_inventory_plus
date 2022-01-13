@@ -1,0 +1,4 @@
+unified_inventory_plus.enable_craft_all (enable "all" button) bool true
+unified_inventory_plus.enable_craft_organize (enable template buttons) bool true
+unified_inventory_plus.enable_craft_rotate (enable rotate buttons) bool true
+unified_inventory_plus.enable_craft_clear (enable "clear" button) bool true

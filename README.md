@@ -32,9 +32,13 @@ Copyright (C) 2017 Bousket
 Unified Inventory Plus code is licensed under the CC0
 https://creativecommons.org/publicdomain/zero/1.0/
 
+Copyright (C) 2022 fluxionary
+Code: AGPL
+Media: CC0
+
 ## Authors
 Bousket - Main mod.  
 shivajiva101 - Skyblock Integration.
-fluxionary - Stamina mod integration.
+fluxionary - Stamina mod integration, rewrite.
 NatureFreshMilk.
 Panquesito7.
