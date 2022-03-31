@@ -145,12 +145,12 @@ local function craft_organize(player, fields)
         ItemStack(), ItemStack(), ItemStack(),
     }
 
-    local first = true
+    -- because remainder is strictly less than pattern_size, this should always finish w/ remainder = 0
     for _, index in ipairs(pattern) do
         local new_item = ItemStack(single_item)
-        if first then
-            new_item:set_count(new_stack_size + remainder)
-            first = false
+        if remainder > 0 then
+            new_item:set_count(new_stack_size + 1)
+            remainder = remainder - 1
         else
             new_item:set_count(new_stack_size)
         end
