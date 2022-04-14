@@ -1,5 +1,7 @@
 local ui = unified_inventory
 local uip = unified_inventory_plus
+local has = uip.has
+local settings = uip.settings
 local S = uip.S
 local F = minetest.formspec_escape
 
@@ -56,6 +58,15 @@ local function craft_craftall(player)
         return
     end
 
+    if (
+        has.stamina and
+        stamina.get_saturation and
+        stamina.get_saturation(player) <= settings.craft_all_min_saturation
+    ) then
+        minetest.chat_send_player(player_name, S("You are too hungry to use Craft All at this time."))
+        return
+    end
+
     local num_crafted = 0
     -- don't modify player's inventory until end, in case something goes wrong (e.g. crash)
     local tmp_inv_name = ("uip_tmp_%s"):format(player_name)
@@ -98,12 +109,18 @@ local function craft_craftall(player)
             break
         end
 
-        if has_stamina and stamina.exhaust_player then
+        if has.stamina and stamina.exhaust_player then
+            minetest.chat_send_player(player_name, "has stamina")
             stamina.exhaust_player(player, stamina.settings.exhaust_craft, stamina.exhaustion_reasons.craft)
+        elseif has.stamina then
+            minetest.chat_send_player(player_name, "bad stamina")
+
+        else
+            minetest.chat_send_player(player_name, "doesn't have")
         end
 
         -- support skyblock quests
-        if has_skyblock then
+        if has.skyblock then
             -- track crafting, mimic minetest.register_on_craft as it's bypassed using this function ;)
             skyblock.feats.on_craft(expected_result, player)
         end
