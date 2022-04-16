@@ -110,13 +110,7 @@ local function craft_craftall(player)
         end
 
         if has.stamina and stamina.exhaust_player then
-            minetest.chat_send_player(player_name, "has stamina")
             stamina.exhaust_player(player, stamina.settings.exhaust_craft, stamina.exhaustion_reasons.craft)
-        elseif has.stamina then
-            minetest.chat_send_player(player_name, "bad stamina")
-
-        else
-            minetest.chat_send_player(player_name, "doesn't have")
         end
 
         -- support skyblock quests
