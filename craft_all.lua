@@ -49,8 +49,8 @@ end
 
 -- Craft max possible items and put the result in the main inventory
 local function craft_craftall(player)
-    local player_inv = player:get_inventory()
     local player_name = player:get_player_name()
+    local player_inv = player:get_inventory()
     local craft_list = player_inv:get_list("craft")
     local expected_result = player_inv:get_stack("craftpreview", 1)
     local craft_width = infer_width(craft_list, expected_result)
@@ -58,22 +58,28 @@ local function craft_craftall(player)
         return
     end
 
-    if (
-        has.stamina and
-        stamina.get_saturation and
-        stamina.get_saturation(player) <= settings.craft_all_min_saturation
-    ) then
-        minetest.chat_send_player(player_name, S("You are too hungry to use Craft All at this time."))
-        return
-    end
-
     local num_crafted = 0
-    -- don't modify player's inventory until end, in case something goes wrong (e.g. crash)
-    local tmp_inv_name = ("uip_tmp_%s"):format(player_name)
-    local tmp_inv = minetest.create_detached_inventory(tmp_inv_name, {}, player_name)
+    -- don't modify player's inventory until we're done, in case something goes wrong (e.g. crash)
+    -- use FakeInventory instead of a detached inventory, because detached inventory actions all result in packets
+    -- sent to the player.
+    local tmp_inv = futil.FakeInventory()
     tmp_inv:set_size("main", player_inv:get_size("main"))
     tmp_inv:set_list("main", player_inv:get_list("main"))
+    tmp_inv:set_size("craft", player_inv:get_size("craft"))
+    tmp_inv:set_list("craft", craft_list)
+
     while true do
+        if (
+            has.stamina and
+            stamina.get_saturation and
+            stamina.get_saturation(player) <= settings.craft_all_min_saturation
+        ) then
+            minetest.chat_send_player(player_name, S("You are too hungry to use Craft All at this time."))
+            break
+        end
+
+        -- note that get_craft_result can be *very* slow, until minetest 5.7.0 is released.
+        -- see https://github.com/minetest/minetest/issues/13231
         local output, decremented_input = minetest.get_craft_result({
             method = "normal",
             width = craft_width,
@@ -81,16 +87,28 @@ local function craft_craftall(player)
         })
 
         if output.item:get_name() ~= expected_result:get_name() then
+            -- the recipe changed, so we've run out of something. stop processing.
             break
         end
 
+        -- minetest.on_craft expects to see the decremented input list.
+        tmp_inv:set_list("craft", decremented_input.items)
+
+        -- invoke callbacks, for compatibility w/ stamina, skyblock, moretrees, etc.
+        output.item = minetest.on_craft(output.item, player, craft_list, tmp_inv)
+
+        -- track items added to the inventory, in case we need to remove them later
         local added = {}
+
         if tmp_inv:room_for_item("main", output.item) then
             tmp_inv:add_item("main", output.item)  -- should be no remainder, ignore it
             table.insert(added, output.item)
         else
+            -- no room for the output item, stop
             break
         end
+
+        -- we now try to add all replacements.
         local all_added = true
         for _, replacement_stk in ipairs(output.replacements) do
             if tmp_inv:room_for_item("main", replacement_stk) then
@@ -103,31 +121,21 @@ local function craft_craftall(player)
         end
 
         if not all_added then
+            -- if we failed to add all the replacements, remove what we've added, and abort
             for _, stk in ipairs(added) do
                 tmp_inv:remove_item("main", stk)  -- should be no remainder, ignore it
             end
             break
         end
 
-        if has.stamina and stamina.exhaust_player then
-            stamina.exhaust_player(player, stamina.settings.exhaust_craft, stamina.exhaustion_reasons.craft)
-        end
-
-        -- support skyblock quests
-        if has.skyblock then
-            -- track crafting, mimic minetest.register_on_craft as it's bypassed using this function ;)
-            skyblock.feats.on_craft(expected_result, player)
-        end
-
-        craft_list = decremented_input.items
+        -- the craft list can be modified by the callbacks, so re-load it
+        craft_list = tmp_inv:get_list("craft")
 
         num_crafted = num_crafted + 1
     end
 
     player_inv:set_list("craft", craft_list)
     player_inv:set_list("main", tmp_inv:get_list("main"))
-
-    minetest.remove_detached_inventory(tmp_inv_name)
 
     uip.log("action", S("%s crafts %s %i"), player_name, expected_result:to_string(), num_crafted)
 end
