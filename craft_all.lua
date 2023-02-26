@@ -95,6 +95,8 @@ local function craft_craftall(player)
         tmp_inv:set_list("craft", decremented_input.items)
 
         -- invoke callbacks, for compatibility w/ stamina, skyblock, moretrees, etc.
+        -- note that this is an *undocumented* handler of the minetest lua API, and possibly is subject to change
+        -- in the future.
         output.item = minetest.on_craft(output.item, player, craft_list, tmp_inv)
 
         -- track items added to the inventory, in case we need to remove them later
