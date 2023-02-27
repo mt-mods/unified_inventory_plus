@@ -1,4 +1,5 @@
--- Unified Inventory Plus for Minetest 0.4.8+
+-- Unified Inventory Plus for Minetest
+futil.check_version({ year = 2023, month = 02, day = 26 })
 
 local modname = minetest.get_current_modname()
 local modpath = minetest.get_modpath(modname)
@@ -27,7 +28,6 @@ unified_inventory_plus = {
 
     has = {
         stamina = minetest.global_exists("stamina"),
-        skyblock = minetest.get_modpath("skyblock"),
     },
 
     log = function(level, message_fmt, ...)

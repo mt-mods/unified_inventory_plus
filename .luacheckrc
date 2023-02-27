@@ -7,6 +7,7 @@ globals = {
 }
 
 read_globals = {
+	"futil",
 	"stamina",
 	"skyblock",
 	"ItemStack",
