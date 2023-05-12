@@ -31,7 +31,7 @@ unified_inventory_plus = {
     },
 
     log = function(level, message_fmt, ...)
-        minetest.log(level, "[unified_inventory_plus]" .. message_fmt:format(...))
+        minetest.log(level, "[unified_inventory_plus] " .. message_fmt:format(...))
     end,
 
     S = minetest.get_translator("unified_inventory"),
