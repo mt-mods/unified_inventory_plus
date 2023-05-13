@@ -42,7 +42,7 @@ local function infer_width(list, expected)
         end
     end
     if not width then
-        uip.log("warning", S("Can't infer recipe width for %s"), expected:to_string())
+        uip.log("warning", "Can't infer recipe width for %s", expected:to_string())
     end
     return width
 end
@@ -139,7 +139,7 @@ local function craft_craftall(player)
     player_inv:set_list("craft", craft_list)
     player_inv:set_list("main", tmp_inv:get_list("main"))
 
-    uip.log("action", S("%s crafts %s %i"), player_name, expected_result:to_string(), num_crafted)
+    uip.log("action", "player %s crafts %s %i", player_name, expected_result:to_string(), num_crafted)
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
