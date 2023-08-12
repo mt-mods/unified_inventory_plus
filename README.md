@@ -33,11 +33,11 @@ Unified Inventory Plus code is licensed under the CC0
 https://creativecommons.org/publicdomain/zero/1.0/
 
 Copyright (C) 2022 fluxionary
-Code: AGPL
+Code: LGPL
 Media: CC0
 
 ## Authors
-Bousket - Main mod.  
+Bousket - Main mod.
 shivajiva101 - Skyblock Integration.
 fluxionary - Stamina mod integration, rewrite.
 NatureFreshMilk.
