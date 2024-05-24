@@ -1,6 +1,4 @@
 -- Unified Inventory Plus for Minetest
-futil.check_version({ year = 2023, month = 02, day = 26 })
-
 local modname = minetest.get_current_modname()
 local modpath = minetest.get_modpath(modname)
 

@@ -60,12 +60,10 @@ local function craft_craftall(player)
 
     local num_crafted = 0
     -- don't modify player's inventory until we're done, in case something goes wrong (e.g. crash)
-    -- use FakeInventory instead of a detached inventory, because detached inventory actions all result in packets
+    -- use a fake inventory instead of a detached inventory, because detached inventory actions all result in packets
     -- sent to the player.
-    local tmp_inv = futil.FakeInventory()
-    tmp_inv:set_size("main", player_inv:get_size("main"))
+    local tmp_inv = fakelib.create_inventory()
     tmp_inv:set_list("main", player_inv:get_list("main"))
-    tmp_inv:set_size("craft", player_inv:get_size("craft"))
     tmp_inv:set_list("craft", craft_list)
 
     while true do

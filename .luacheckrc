@@ -3,12 +3,11 @@ unused_args = false
 globals = {
     "unified_inventory",
     "unified_inventory_plus",
-	"minetest",
 }
 
 read_globals = {
-	"futil",
+	"minetest",
 	"stamina",
-	"skyblock",
 	"ItemStack",
+	"fakelib",
 }
