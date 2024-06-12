@@ -21,6 +21,7 @@ Features can be toggled with the following settings (true per default):
 
 ## Dependencies
 - [unified_inventory](https://github.com/minetest-mods/unified_inventory)
+- [fakelib](https://content.minetest.net/packages/OgelGames/fakelib/)
 #### Optional dependencies
 - [stamina](https://github.com/minetest-mods/stamina)
 
