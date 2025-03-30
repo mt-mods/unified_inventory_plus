@@ -22,6 +22,7 @@ unified_inventory_plus = {
         { ico = "pattern_6c.png", pattern = { 1, 3, 4, 6, 7, 9 } },
         { ico = "pattern_7.png", pattern = { 1, 2, 3, 4, 5, 6, 8 } },
         { ico = "pattern_8.png", pattern = { 1, 2, 3, 4, 6, 7, 8, 9 } },
+        { ico = "pattern_10.png", pattern = { 1, 2, 3, 4, 5 } },
     },
 
     has = {
